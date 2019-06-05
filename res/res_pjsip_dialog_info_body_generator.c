@@ -160,6 +160,8 @@ static int dialog_info_generate_body_content(void *body, void *data)
 		dlt = ast_sip_presence_xml_create_node(state_data->pool, dlocal, "target");
 		ast_sip_presence_xml_create_attr(state_data->pool, dlt, "uri", sanitized);
 		pj_strdup2(state_data->pool, &dli->content, sanitized);
+
+		ast_log(LOG_ERROR, "remote dialog URI: %s\n", state_data->remote);
 	}
 
 	state = ast_sip_presence_xml_create_node(state_data->pool, dialog, "state");
