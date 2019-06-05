@@ -142,6 +142,26 @@ static int dialog_info_generate_body_content(void *body, void *data)
 		ast_sip_presence_xml_create_attr(state_data->pool, dialog, "direction", "recipient");
 	}
 
+	if (!ast_strlen_zero(statestring) && !strcmp(statestring, "early")) {
+		pj_xml_node *dremote, *dri, *drt, *dlocal, *dli, *dlt;
+		ast_sip_presence_xml_create_attr(state_data->pool, dialog, "direction", "recipient");
+
+		dremote = ast_sip_presence_xml_create_node(state_data->pool, dialog, "remote");
+		dri = ast_sip_presence_xml_create_node(state_data->pool, dremote, "identity");
+		// don't have remote number, so it is "0" at this moment
+		ast_sip_presence_xml_create_attr(state_data->pool, dri, "display", "0");
+		drt = ast_sip_presence_xml_create_node(state_data->pool, dremote, "target");
+		ast_sip_presence_xml_create_attr(state_data->pool, drt, "uri", "0");
+		pj_strdup2(state_data->pool, &dri->content, "0");
+
+		dlocal = ast_sip_presence_xml_create_node(state_data->pool, dialog, "local");
+		dli = ast_sip_presence_xml_create_node(state_data->pool, dlocal, "identity");
+		ast_sip_presence_xml_create_attr(state_data->pool, dli, "display", state_data->exten);
+		dlt = ast_sip_presence_xml_create_node(state_data->pool, dlocal, "target");
+		ast_sip_presence_xml_create_attr(state_data->pool, dlt, "uri", sanitized);
+		pj_strdup2(state_data->pool, &dli->content, sanitized);
+	}
+
 	state = ast_sip_presence_xml_create_node(state_data->pool, dialog, "state");
 	pj_strdup2(state_data->pool, &state->content, statestring);
 
