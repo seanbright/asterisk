@@ -2085,9 +2085,10 @@ static int create_ephemeral_certificate(EVP_PKEY *keypair, X509 **certificate)
 #endif
 
 	/* Set the name and issuer */
-	if (!(name = X509_get_subject_name(cert))
+	if (!(name = X509_NAME_new())
 	   || !X509_NAME_add_entry_by_NID(name, NID_commonName, MBSTRING_ASC,
 									  (unsigned char *) "asterisk", -1, -1, 0)
+	   || !X509_set_subject_name(cert, name)
 	   || !X509_set_issuer_name(cert, name)) {
 		goto error;
 	}
